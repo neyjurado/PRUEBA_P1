@@ -96,3 +96,99 @@ function renderizarVideojuegos(lista, limpiar = false) {
         grid.appendChild(card);
     }
 }
+
+//llamado de juegos 
+// Carga inicial: trae muchos resultados para búsqueda local y muestra primeros juegosPorPagina
+async function cargarVideojuegosInicial() {
+    if (estadoCarga) estadoCarga.classList.remove("hidden");
+    if (mensajeError) mensajeError.classList.add("hidden");
+    if (grid) grid.innerHTML = '';
+    paginaActual = 0;
+    juegosEnCache = [];
+    juegosActuales = [];
+    busquedaActiva = false;
+
+    try {
+        const url = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&pageSize=60&pageNumber=0';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Respuesta ${res.status}`);
+        const data = await res.json();
+        juegosEnCache = data;
+        juegosActuales = data;
+        renderizarVideojuegos(data.slice(0, juegosPorPagina), false);
+        paginaActual++;
+    } catch (e) {
+        console.error("Error al cargar Cheapshark", e);
+        if (mensajeError) {
+            mensajeError.textContent = "Error al cargar los juegos. Revisa la consola o CORS.";
+            mensajeError.classList.remove('hidden');
+        }
+    } finally {
+        if (estadoCarga) estadoCarga.classList.add('hidden');
+    }
+}
+
+// juegos desde la API
+async function cargarMasJuegos() {
+    if (estadoCarga) estadoCarga.classList.remove("hidden");
+    if (mensajeError) mensajeError.classList.add("hidden");
+    if (btnVerMas) btnVerMas.disabled = true;
+
+    try {
+        const url = `https://www.cheapshark.com/api/1.0/deals?storeID=1&pageSize=${juegosPorPagina}&pageNumber=${paginaActual}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Respuesta ${res.status}`);
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            if (mensajeError) {
+                mensajeError.textContent = "No hay más juegos disponibles";
+                mensajeError.classList.remove('hidden');
+            }
+            if (btnVerMas) btnVerMas.disabled = false;
+            return;
+        }
+
+        juegosEnCache = juegosEnCache.concat(data);
+        juegosActuales = juegosActuales.concat(data);
+        renderizarVideojuegos(data, false);
+        paginaActual++;
+        if (btnVerMas) btnVerMas.disabled = false;
+    } catch (e) {
+        console.error("Error al cargar más juegos", e);
+        if (mensajeError) mensajeError.classList.remove('hidden');
+        if (btnVerMas) btnVerMas.disabled = false;
+    } finally {
+        if (estadoCarga) estadoCarga.classList.add('hidden');
+    }
+}
+
+
+// Filtrado y ordenamiento
+function aplicarFiltros() {
+    const termino = inputBusqueda ? inputBusqueda.value.trim().toLowerCase() : "";
+    const plataforma = selectPlataforma ? selectPlataforma.value : "";
+
+    let resultados = juegosEnCache.filter(juego => {
+        const titulo = (juego.title || juego.external || "").toLowerCase();
+        const cumpleBusqueda = termino === "" || titulo.includes(termino);
+        // actualmente no filtramos por plataforma porque la API no devuelve plataforma consistente
+        return cumpleBusqueda;
+    });
+
+    const ordenar = selectOrdenar ? selectOrdenar.value : "";
+    if (ordenar === "rating") {
+        resultados.sort((a, b) => (b.metacriticScore || 0) - (a.metacriticScore || 0));
+    } else if (ordenar === "recent") {
+        resultados.sort((a, b) => (b.steamRatingCount || 0) - (a.steamRatingCount || 0));
+    } else if (ordenar === "name") {
+        resultados.sort((a, b) => (a.title || a.external || "").localeCompare(b.title || b.external || ""));
+    }
+
+    juegosActuales = resultados;
+    return resultados;
+}
+
+
+
+    cargarVideojuegosInicial();
