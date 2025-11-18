@@ -50,3 +50,65 @@
                     </select>
                 </div>
             </section>
+
+            <!-- VIDEOJUEGOS -->
+        <section>
+            <h2 class="text-lg font-semibold mb-4 text-white">Ofertas destacadas</h2>
+        
+            <!-- mensaje cargando -->
+            <p id="estado-de-carga" class="text-sm text-slate-500 mb-3 hidden">Cargando...</p>
+
+            <!-- mensaje error -->
+            <p id="mensaje-de-error" class="text-sm text-red-500 mb-3 hidden">videojuego no encontrado</p>
+
+            <div 
+
+            id="grid-videogames" 
+            class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <!-- tarjetas de videojuegos  -->
+
+            </div>
+
+            <!-- BOTÓN VER MÁS -->
+            <div class="mt-8 flex justify-center">
+                <button id="btn-ver-mas" class="px-6 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition">
+                    Ver más
+                </button>
+            </div>
+        </section>
+        </main>
+        <!-- MOSTRAR DETALLES -->
+        <div id="modal-detalles" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 overflow-hidden">
+                <!-- ....-->
+                <div class="bg-slate-900 text-white p-6 flex justify-between items-center">
+                    <h2 id="modal-titulo" class="text-2xl font-bold">Detalles del juego</h2>
+                    <button id="btn-cerrar-modal" class="text-2xl font-bold hover:text-slate-300">&times;</button>
+                </div>
+
+                <!-- Contenido del modal -->
+                <div class="p-6 flex flex-col gap-4">
+                    <!-- Imagen -->
+                    <img id="modal-imagen" src="" alt="Juego" class="w-full h-64 object-cover rounded-lg">
+
+                    <!-- Información -->
+                    <div class="flex flex-col gap-3">
+                        <p class="text-sm text-slate-500">
+                            <strong>Precio normal:</strong> <span id="modal-precio-normal" class="text-slate-900">-</span>
+                        </p>
+                        <p class="text-lg text-green-900 font-bold">
+                            <strong>Precio en oferta:</strong> <span id="modal-precio-oferta" class="text-green-600">-</span>
+                        </p>
+                        <p class="text-sm text-slate-600">
+                            <strong>Ahorro:</strong> <span id="modal-ahorro" class="text-slate-900">-</span>
+                        </p>
+                    </div>
+
+                    <!-- Enlace a la tienda -->
+                    <a id="modal-enlace-tienda" href="#" target="_blank" class="mt-4 block text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Ir a la tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
