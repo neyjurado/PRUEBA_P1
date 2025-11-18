@@ -189,6 +189,61 @@ function aplicarFiltros() {
     return resultados;
 }
 
+function ejecutarBusqueda() {
+    if (estadoCarga) estadoCarga.classList.remove("hidden");
+    if (grid) grid.innerHTML = '';
+    const resultados = aplicarFiltros();
+    if (!resultados || resultados.length === 0) {
+        if (mensajeError) {
+            mensajeError.textContent = "No se encontraron videojuegos con ese criterio.";
+            mensajeError.classList.remove('hidden');
+        }
+    } else {
+        if (mensajeError) mensajeError.classList.add('hidden');
+        renderizarVideojuegos(resultados, true);
+    }
+    if (estadoCarga) estadoCarga.classList.add('hidden');
+}
 
+// Esperar a que el DOM esté listo antes de obtener elementos y asignar listeners
+document.addEventListener('DOMContentLoaded', () => {
+    grid = document.querySelector('#grid-videogames');
+    estadoCarga = document.querySelector('#estado-de-carga');
+    mensajeError = document.querySelector('#mensaje-de-error');
+    btnVerMas = document.querySelector('#btn-ver-mas');
+    inputBusqueda = document.querySelector('#input-busqueda');
+    modalDetalles = document.querySelector('#modal-detalles');
+    btnCerrarModal = document.querySelector('#btn-cerrar-modal');
+    btnBuscar = document.querySelector('#btn-buscar');
+    selectPlataforma = document.querySelector('#select-plataforma');
+    selectOrdenar = document.querySelector('#select-ordenar');
+
+    if (btnVerMas) btnVerMas.addEventListener('click', cargarMasJuegos);
+    if (btnCerrarModal) btnCerrarModal.addEventListener('click', cerrarModal);
+    if (modalDetalles) {
+        modalDetalles.addEventListener('click', (e) => {
+            if (e.target === modalDetalles) cerrarModal();
+        });
+    }
+    if (btnBuscar) btnBuscar.addEventListener('click', ejecutarBusqueda);
+    if (inputBusqueda) {
+        let debounceTimer = null;
+        inputBusqueda.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                ejecutarBusqueda();
+            }, 300);
+        });
+        inputBusqueda.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') ejecutarBusqueda();
+        });
+    }
+    if (selectPlataforma) selectPlataforma.addEventListener('change', ejecutarBusqueda);
+    if (selectOrdenar) selectOrdenar.addEventListener('change', ejecutarBusqueda);
 
     cargarVideojuegosInicial();
+});
+
+
+
+    

@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+
+    /* IMAGEN DE FONDO*/
+
+body {
+    background-image: url("fondoney.png");
+    background-size: cover;           /* Cubre todo el fondo */
+    background-position: center;      /* Centra la imagen */
+    background-attachment: fixed;    /* La imagen no se mueve al hacer scroll */
+    background-repeat: no-repeat;     /* No repite la imagen */
+    min-height: 100vh;               /* Altura mínima de la pantalla */
+}
