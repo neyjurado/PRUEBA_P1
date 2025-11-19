@@ -35,10 +35,12 @@ function abrirModal(juego) {
     if (elAhorro) elAhorro.textContent = ahorro !== "-" ? `${ahorro}%` : "No disponible";
 
     let enlaceURL = "#";
-    if (juego.gameID) {
-        enlaceURL = `https://www.cheapshark.com/api/redirect/steam?appID=${juego.gameID}`;
-    } else if (juego.dealID) {
-        enlaceURL = `https://www.cheapshark.com/redirect?dealID=${juego.dealID}`;
+    if (juego.dealID) {
+        enlaceURL = `https://www.cheapshark.com/redirect?dealID=${encodeURIComponent(juego.dealID)}`;
+    } else if (juego.gameID) {
+        enlaceURL = `https://www.cheapshark.com/api/redirect/steam?appID=${encodeURIComponent(juego.gameID)}`;
+    } else {
+        enlaceURL = `https://www.cheapshark.com/search?q=${encodeURIComponent(titulo)}`;
     }
     if (elEnlace) elEnlace.href = enlaceURL;
 
@@ -73,7 +75,6 @@ function crearCard(juego) {
             </p>
             <p class="text-sm text-slate-600 flex-1">${juego.description || juego.shortDescription || ""}</p>
             <div class="mt-4 flex items-center justify-between">
-                <span class="text-yellow-500 font-semibold">⭐ ${rating}</span>
                 <button class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm hover:bg-slate-800 btn-detalles">Ver detalles</button>
             </div>
         </div>
